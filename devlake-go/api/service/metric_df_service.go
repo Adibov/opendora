@@ -17,12 +17,12 @@ func (service MetricDfService) ServeRequest(params ServiceParameters) (models.Me
 		"quarterly": sql_queries.QuarterlyDeploymentSql,
 	}
 
-	typeQueryMap := map[string]string{
+	_ = map[string]string{
 		"df_count":   sql_queries.CountSql,
 		"df_average": sql_queries.AverageSql,
 	}
 
-	query := aggregationQueryMap[params.Aggregation] + typeQueryMap[params.TypeQuery]
+	query := aggregationQueryMap[params.Aggregation]
 
 	dataPoints, err := service.Client.QueryDeployments(query, sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
 

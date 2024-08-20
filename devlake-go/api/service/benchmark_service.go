@@ -21,7 +21,5 @@ func (service BenchmarkService) ServeRequest(params ServiceParameters) (models.B
 
 	query := typeQueryMap[params.TypeQuery]
 
-	key, err := service.Client.QueryBenchmark(query, sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
-
-	return models.BenchmarkResponse{Key: key}, err
+	return service.Client.QueryBenchmark(query, sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
 }

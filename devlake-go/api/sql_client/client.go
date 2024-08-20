@@ -13,7 +13,7 @@ import (
 
 type ClientInterface interface {
 	QueryDeployments(query string, params QueryParams) ([]models.DataPoint, error)
-	QueryBenchmark(query string, params QueryParams) (string, error)
+	QueryBenchmark(query string, params QueryParams) (models.BenchmarkResponse, error)
 }
 
 type Client struct {
@@ -90,12 +90,12 @@ func (client Client) QueryDeployments(query string, params QueryParams) ([]model
 	return queryRows(query, params, func() models.DataPoint { return models.DataPoint{} })
 }
 
-func (client Client) QueryBenchmark(query string, params QueryParams) (string, error) {
+func (client Client) QueryBenchmark(query string, params QueryParams) (models.BenchmarkResponse, error) {
 	response, err := queryRows(query, params, func() models.BenchmarkResponse { return models.BenchmarkResponse{} })
 
 	if err != nil {
-		return "", err
+		return models.BenchmarkResponse{}, err
 	}
 
-	return response[0].Key, nil
+	return response[0], nil
 }

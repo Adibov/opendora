@@ -25,12 +25,12 @@ func (client MockClient) QueryDeployments(query string, params QueryParams) ([]m
 	return []models.DataPoint{}, nil
 }
 
-func (client MockClient) QueryBenchmark(query string, params QueryParams) (string, error) {
+func (client MockClient) QueryBenchmark(query string, params QueryParams) (models.BenchmarkResponse, error) {
 	if client.MockBenchmarkDataMap[query].Data != "" {
-		return client.MockBenchmarkDataMap[query].Data, nil
+		return models.BenchmarkResponse{Key: client.MockBenchmarkDataMap[query].Data}, nil
 	}
 	if client.MockBenchmarkDataMap[query].Err != nil {
-		return "", client.MockBenchmarkDataMap[query].Err
+		return models.BenchmarkResponse{}, client.MockBenchmarkDataMap[query].Err
 	}
-	return "", nil
+	return models.BenchmarkResponse{}, nil
 }
