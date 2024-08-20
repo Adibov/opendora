@@ -15,5 +15,6 @@ type MetricResponse struct {
 }
 
 type BenchmarkResponse struct {
-	Key string `json:"key" db:"data_key"`
+	Key   string `json:"key" db:"data_key"`
+	Value string `json:"value" db:"data_value"`
 }
