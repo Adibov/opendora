@@ -8,7 +8,7 @@ with _pr_stats as (
             join project_mapping pm on pr.base_repo_id = pm.row_id and pm.`table` = 'repos'
 		join cicd_deployment_commits cdc on ppm.deployment_commit_id = cdc.id
     WHERE
-        pm.project_name in (:project)
+        pm.project_name REGEXP (:project)
       and pr.merged_date is not null
       and ppm.pr_cycle_time is not null
       AND cdc.finished_date BETWEEN FROM_UNIXTIME(:from)

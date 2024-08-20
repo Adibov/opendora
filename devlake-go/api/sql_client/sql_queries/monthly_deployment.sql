@@ -22,7 +22,7 @@ with last_few_calendar_months as(
          FROM cicd_deployment_commits cdc
                   JOIN project_mapping pm on cdc.cicd_scope_id = pm.row_id and pm.`table` = 'cicd_scopes'
          WHERE
-             pm.project_name in (:project)
+             pm.project_name REGEXP (:project)
            and cdc.result = 'SUCCESS'
            and cdc.environment = 'PRODUCTION'
          GROUP BY 1
