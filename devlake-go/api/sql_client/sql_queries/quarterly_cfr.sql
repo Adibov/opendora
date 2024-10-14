@@ -22,8 +22,7 @@ WITH RECURSIVE calendar_quarters AS (
         JOIN project_mapping pm ON cdc.cicd_scope_id = pm.row_id AND pm.`table` = 'cicd_scopes'
     WHERE
         (
-            :project = ""
-            OR LOWER(repos.name) LIKE CONCAT('%/', LOWER(:project))
+            LOWER(pm.project_name) REGEXP LOWER(:project)
         )
         AND cdc.result = 'SUCCESS'
         AND cdc.environment = 'PRODUCTION'
@@ -31,15 +30,22 @@ WITH RECURSIVE calendar_quarters AS (
 ),
 
 _failure_caused_by_deployments AS (
-    SELECT
-        d.deployment_id,
-        d.deployment_finished_date,
-        count(DISTINCT CASE WHEN i.type = 'INCIDENT' THEN d.deployment_id ELSE NULL END) AS has_incident
-    FROM
-        _deployments d
-        LEFT JOIN project_issue_metrics pim ON d.deployment_id = pim.deployment_id
-        LEFT JOIN issues i ON pim.id = i.id
-    GROUP BY 1,2
+   SELECT
+       d.deployment_id,
+       d.deployment_finished_date,
+       count(
+               distinct case
+                            when i.id is not null then d.deployment_id
+                            else null
+           end
+       ) as has_incident
+   FROM
+       _deployments d
+           left join project_incident_deployment_relationships pim on d.deployment_id = pim.deployment_id
+           left join incidents i on pim.id = i.id
+   GROUP BY
+       1,
+       2
 ),
 
 _change_failure_rate_for_each_quarter AS (
@@ -61,6 +67,4 @@ SELECT
     cfr.change_failure_rate AS data_value
 FROM
     calendar_quarters cq
-    LEFT JOIN _change_failure_rate_for_each_quarter cfr ON cq.quarter_date = cfr.quarter_date
-ORDER BY
-cq.quarter_date DESC
+    JOIN _change_failure_rate_for_each_quarter cfr ON cq.quarter_date = cfr.quarter_date

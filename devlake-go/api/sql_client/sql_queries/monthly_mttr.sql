@@ -10,8 +10,7 @@ WITH _incidents AS (
       JOIN project_mapping pm ON b.id = pm.row_id AND pm.`table` = 'boards'
     WHERE
         (
-            :project = ""
-            OR LOWER(repos.name) LIKE CONCAT('%/', LOWER(:project))
+            LOWER(pm.project_name) REGEXP LOWER(:project)
         )
         AND i.type = 'INCIDENT'
         AND i.lead_time_minutes IS NOT NULL

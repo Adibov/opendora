@@ -63,6 +63,8 @@ func benchmarkHandler(client sql_client.ClientInterface) func(w http.ResponseWri
 	serviceMap := map[string]service.Service[models.BenchmarkResponse]{
 		"df":   benchmarkService,
 		"mltc": benchmarkService,
+		"cfr":  benchmarkService,
+		"mttr": benchmarkService,
 	}
 
 	return handler(validation.ValidBenchmarkServiceParameters, serviceMap)

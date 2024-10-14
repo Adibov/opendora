@@ -24,8 +24,7 @@ WITH RECURSIVE calendar_weeks AS (
       JOIN project_mapping pm ON b.id = pm.row_id AND pm.`table` = 'boards'
     WHERE
         (
-            :project = ""
-            OR LOWER(repos.name) LIKE CONCAT('%/', LOWER(:project))
+            LOWER(pm.project_name) REGEXP LOWER(:project)
         )
         AND i.type = 'INCIDENT'
         AND i.lead_time_minutes IS NOT NULL
@@ -43,13 +42,11 @@ _mttr as(
     GROUP BY week
 )
 
-SELECT 
-        YEARWEEK(cw.week_date) AS data_key,
-    CASE 
-        WHEN m.median_time_to_resolve IS NULL THEN 0 
+SELECT
+    concat(date_format(cw.week_date,'%m/%d'), ' - ', date_format(DATE_ADD(cw.week_date, INTERVAL +6 DAY),'%m/%d')) as data_key,
+    CASE
+        WHEN m.median_time_to_resolve IS NULL THEN 0
         ELSE m.median_time_to_resolve/60 END AS data_value
-FROM 
+FROM
     calendar_weeks cw
     LEFT JOIN _mttr m ON YEARWEEK(cw.week_date) = m.week
-    ORDER BY
-        cw.week_date DESC

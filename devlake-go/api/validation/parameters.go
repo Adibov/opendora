@@ -106,7 +106,7 @@ func validServiceParameters(queries url.Values, validTypes []string) (service.Se
 }
 
 func ValidBenchmarkServiceParameters(queries url.Values) (service.ServiceParameters, error) {
-	return validServiceParameters(queries, []string{"df", "mltc"})
+	return validServiceParameters(queries, []string{"df", "mltc", "cfr", "mttr"})
 }
 
 func ValidMetricServiceParameters(queries url.Values) (service.ServiceParameters, error) {
