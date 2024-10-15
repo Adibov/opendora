@@ -56,7 +56,7 @@ _change_failure_rate_for_each_quarter AS (
         ) AS quarter_date,
         CASE
             WHEN count(deployment_id) IS NULL THEN NULL
-            ELSE sum(has_incident)/count(deployment_id) END AS change_failure_rate
+            ELSE sum(has_incident)/count(deployment_id) * 100 END AS change_failure_rate
     FROM
         _failure_caused_by_deployments
     GROUP BY 1

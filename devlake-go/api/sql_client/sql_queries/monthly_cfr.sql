@@ -38,7 +38,7 @@ _change_failure_rate_for_each_month as (
         date_format(deployment_finished_date,'%y/%m') as month,
         case
             when count(deployment_id) is null then null
-            else sum(has_incident)/count(deployment_id) end as change_failure_rate
+            else sum(has_incident)/count(deployment_id) * 100 end as change_failure_rate
     FROM
         _failure_caused_by_deployments
     GROUP BY 1

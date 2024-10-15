@@ -26,7 +26,7 @@ WITH _deployments as (SELECT cdc.cicd_deployment_id AS deployment_id,
 
      _change_failure_rate AS (SELECT CASE
                                          WHEN count(deployment_id) IS NULL THEN NULL
-                                         ELSE sum(has_incident) / count(deployment_id) END AS change_failure_rate
+                                         ELSE sum(has_incident) / count(deployment_id) * 100 END AS change_failure_rate
                               FROM _failure_caused_by_deployments),
 
      _is_collected_data AS (SELECT CASE
